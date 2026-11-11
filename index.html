@@ -415,13 +415,29 @@
     document.getElementById('btnClearAll').addEventListener('click', clearAll);
 
     if ('serviceWorker' in navigator) {
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+
+      function checkForUpdates(registration) {
+        if (registration) registration.update().catch(() => {});
+      }
+
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js', { scope: './' })
-          .then(() => {
+        navigator.serviceWorker
+          .register('./sw.js', { scope: './', updateViaCache: 'none' })
+          .then((registration) => {
             const el = document.getElementById('swStatus');
             el.hidden = false;
+            checkForUpdates(registration);
+            document.addEventListener('visibilitychange', () => {
+              if (document.visibilityState === 'visible') checkForUpdates(registration);
+            });
           })
-          .catch(err => console.warn('SW registration failed:', err));
+          .catch((err) => console.warn('SW registration failed:', err));
       });
     }
 
