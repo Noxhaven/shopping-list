@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#b8954a">
+  <meta name="theme-color" content="#b8cfe0">
   <meta name="description" content="Offline shopping list with automatic categories (English &amp; Lithuanian)">
   <title>Shopping List</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <style>
     :root {
-      --bg-body: #e8f1f8;
+      --bg-body: #cfe2f3;
       --surface: #dfe8df;
       --surface-input: #ffffff;
       --text: #2c2e30;
@@ -33,19 +33,15 @@
     *, *::before, *::after { box-sizing: border-box; }
     html {
       color-scheme: light only;
-      background-color: #e8f1f8;
+      background-color: #cfe2f3;
     }
     html, body {
       margin: 0;
       min-height: 100%;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       color: var(--text);
-      background-color: #e8f1f8;
-      background:
-        radial-gradient(ellipse 82% 68% at 50% 38%, rgba(198, 218, 235, 0.5) 0%, transparent 62%),
-        radial-gradient(960px 640px at 12% -4%, rgba(210, 228, 242, 0.45) 0%, transparent 56%),
-        radial-gradient(820px 560px at 90% 8%, rgba(185, 210, 225, 0.35) 0%, transparent 54%),
-        linear-gradient(180deg, #eef5fa 0%, #e8f1f8 50%, #e0ecf4 100%);
+      background-color: #cfe2f3;
+      background-image: linear-gradient(180deg, #d8e8f6 0%, #cfe2f3 50%, #c3dbef 100%);
     }
     .app { max-width: 520px; margin: 0 auto; padding: 1rem 1rem calc(1.5rem + var(--safe-bottom)); }
     header { text-align: center; margin-bottom: 1.25rem; }
@@ -220,7 +216,8 @@
     @media (prefers-color-scheme: dark) {
       html, body {
         color: #2c2e30;
-        background-color: #e8f1f8;
+        background-color: #cfe2f3;
+        background-image: linear-gradient(180deg, #d8e8f6 0%, #cfe2f3 50%, #c3dbef 100%);
       }
       .add-panel {
         background-color: #dfe8df;
