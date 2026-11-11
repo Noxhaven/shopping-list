@@ -1,7 +1,8 @@
-const CACHE_VERSION = 'shopping-list-v2';
+const CACHE_VERSION = 'shopping-list-v3';
 const ASSETS = [
   './',
   './index.html',
+  './categorise.js',
   './manifest.webmanifest',
   './icon.svg',
   './icon-192.png',

@@ -33,11 +33,18 @@ python3 -m http.server 8080
 
 Then visit `http://localhost:8080/`. The service worker needs a real origin (localhost is fine); opening `index.html` as a `file://` URL will not register the worker.
 
+### Tests
+
+```bash
+node --test test/categorise.test.js
+```
+
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `index.html` | UI, categorisation logic, and persistence (single file) |
+| `index.html` | UI and persistence |
+| `categorise.js` | EN/LT grocery categorisation (shared with tests) |
 | `sw.js` | Service worker for offline caching |
 | `manifest.webmanifest` | PWA manifest |
 | `icon.svg`, `icon-192.png`, `icon-512.png` | App icons |

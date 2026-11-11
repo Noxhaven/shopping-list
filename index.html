@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#b8954a">
   <meta name="description" content="Offline shopping list with automatic categories (English &amp; Lithuanian)">
   <title>Shopping List</title>
@@ -27,14 +28,19 @@
       --radius: 12px;
       --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 -10px 24px rgba(120, 140, 110, 0.08) inset, 0 10px 28px rgba(80, 70, 50, 0.08);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
-      color-scheme: light;
+      color-scheme: light only;
     }
     *, *::before, *::after { box-sizing: border-box; }
+    html {
+      color-scheme: light only;
+      background-color: #f6f3ec;
+    }
     html, body {
       margin: 0;
       min-height: 100%;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       color: var(--text);
+      background-color: #f6f3ec;
       background:
         radial-gradient(ellipse 82% 68% at 50% 38%, rgba(205, 220, 198, 0.55) 0%, transparent 62%),
         radial-gradient(960px 640px at 12% -4%, rgba(230, 218, 195, 0.4) 0%, transparent 56%),
@@ -52,7 +58,8 @@
     }
     header p { margin: 0; font-size: 0.875rem; color: var(--muted); }
     .add-panel {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.2) 42%, rgba(248, 252, 247, 0.9)), var(--surface);
+      background-color: var(--surface);
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.2) 42%, rgba(248, 252, 247, 0.9));
       border-radius: var(--radius);
       box-shadow: var(--card-shadow);
       border: 1px solid rgba(255, 255, 255, 0.6);
@@ -124,7 +131,8 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.15) 40%), var(--surface);
+      background-color: var(--surface);
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.15) 40%);
       border-radius: var(--radius);
       box-shadow: var(--card-shadow);
       border: 1px solid rgba(255, 255, 255, 0.55);
@@ -212,110 +220,16 @@
     <main id="listRoot" aria-live="polite"></main>
   </div>
 
+  <script src="categorise.js"></script>
   <script>
     const STORAGE_KEY = 'shopping-list-items-v1';
-    const CATEGORY_ORDER = [
-      'Fruit & Vegetables',
-      'Meat & Fish',
-      'Dairy',
-      'Bakery',
-      'Pasta & Rice',
-      'Drinks',
-      'Household',
-      'Frozen',
-      'Other'
-    ];
-
-    /** @type {Array<{category: string, stems: string[]}>} */
-    const CATEGORY_RULES = [
-      { category: 'Fruit & Vegetables', stems: [
-        'apple', 'obuol', 'banan', 'tomato', 'pomidor', 'potato', 'bulv', 'carrot', 'mork',
-        'onion', 'svogun', 'svogūn', 'garlic', 'cesnak', 'lettuce', 'salat', 'salot', 'cucumber', 'agurk',
-        'pepper', 'paprik', 'pipir', 'orange', 'apelsin', 'lemon', 'citrin', 'grape', 'vynuog',
-        'strawber', 'bras', 'brašk', 'cabbage', 'kopust', 'mushroom', 'gryb', 'avocado', 'spinach', 'špinat', 'spinat',
-        'pear', 'kriauš', 'kriause', 'beet', 'burok', 'celery', 'salier', 'broccoli', 'žiedin', 'ziedin',
-        'cauliflower', 'zucchini', 'cukin', 'pumpkin', 'moliug', 'peach', 'persik', 'plum', 'slyv',
-        'cherry', 'vyšn', 'vysn', 'mandarin', 'mango', 'pineapple', 'ananas', 'kiwi', 'melon',
-        'arbūz', 'arbuz', 'watermelon', 'fig', 'datul', 'date', 'herb', 'žolel', 'zolel', 'basil', 'bazil',
-        'parsley', 'petraž', 'petraz', 'dill', 'krap', 'radish', 'ridik', 'leek', 'por', 'blueber', 'aviet', 'raspber',
-        'aviet', 'lime', 'courgette', 'aubergine', 'baklaz', 'eggplant'
-      ]},
-      { category: 'Meat & Fish', stems: [
-        'chicken', 'višt', 'vist', 'beef', 'jautien', 'pork', 'kiaulien', 'lamb', 'avien', 'turkey', 'kalakut',
-        'fish', 'žuv', 'zuv', 'salmon', 'lašiš', 'lasis', 'tuna', 'tunas', 'shrimp', 'krevet', 'bacon', 'šonin', 'sonin',
-        'sausage', 'dešr', 'desr', 'desra', 'ham', 'kump', 'mince', 'farš', 'fars', 'steak', 'kotlet', 'liver', 'kepen',
-        'duck', 'antien', 'meat', 'mės', 'mes', 'seafood', 'jūros', 'juros', 'cod', 'menk', 'herring', 'silk', 'trout', 'upėtak', 'upetak'
-      ]},
-      { category: 'Dairy', stems: [
-        'milk', 'pien', 'cheese', 'sūr', 'sur', 'sri', 'yogurt', 'jogurt', 'jogur', 'butter', 'sviest',
-        'cream', 'grietin', 'egg', 'kiauš', 'kiaus', 'kefyr', 'kefir', 'cottage', 'varšk', 'varsk',
-        'mozzarella', 'feta', 'gouda', 'cheddar', 'sour cream', 'grietine', 'margarine', 'margarin'
-      ]},
-      { category: 'Bakery', stems: [
-        'bread', 'duon', 'roll', 'bandel', 'bagel', 'croissant', 'cake', 'tort', 'pyrag', 'muffin',
-        'cookie', 'sausain', 'biscuit', 'pastry', 'piršt', 'pirst', 'bun', 'kepal', 'toast', 'duonel', 'baguette', 'baton'
-      ]},
-      { category: 'Pasta & Rice', stems: [
-        'pasta', 'makaron', 'spaghetti', 'spage', 'rice', 'ryž', 'ryz', 'noodle', 'noodle', 'ramen',
-        'couscous', 'penne', 'lasagna', 'lazan', 'vermišel', 'vermisel', 'groats', 'kruop', 'buckwheat', 'grik'
-      ]},
-      { category: 'Drinks', stems: [
-        'water', 'vand', 'juice', 'sult', 'coffee', 'kav', 'tea', 'arbat', 'beer', 'alus',
-        'wine', 'vyn', 'soda', 'cola', 'lemonade', 'limonad', 'cider', 'sidr', 'energy drink', 'energ',
-        'mineral', 'mineralinis', 'kombucha', 'smoothie', 'kokteil'
-      ]},
-      { category: 'Household', stems: [
-        'soap', 'muil', 'detergent', 'skalb', 'toilet paper', 'tualet', 'sponge', 'kempin', 'šluost', 'sluost',
-        'trash', 'šiukšl', 'siuksl', 'clean', 'valym', 'salt', 'drusk', 'sugar', 'cukr', 'oil', 'aliej', 'alyvu',
-        'vinegar', 'act', 'spice', 'prieskon', 'flour', 'milt', 'foil', 'folij', 'bag', 'maiš', 'mais',
-        'battery', 'bater', 'light bulb', 'lemput', 'matches', 'degtuk', 'wrap', 'plen', 'dish', 'ind', 'brush', 'šepet', 'sepet'
-      ]},
-      { category: 'Frozen', stems: [
-        'frozen', 'šaldy', 'saldy', 'ice cream', 'ledai', 'saldain', 'lyophil', 'deep freeze', 'žem', 'zem'
-      ]}
-    ];
-
-    function normalize(text) {
-      return text
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function itemMatchesStem(normalizedItem, stem) {
-      const s = normalize(stem);
-      if (!s || s.length < 2) return false;
-      if (normalizedItem === s || normalizedItem.includes(' ' + s) || normalizedItem.startsWith(s + ' ')) {
-        return true;
-      }
-      if (normalizedItem.includes(s)) return true;
-      const words = normalizedItem.split(' ');
-      for (const w of words) {
-        if (w.length < 2) continue;
-        const minLen = Math.min(s.length, 3);
-        if (w.startsWith(s) || s.startsWith(w.slice(0, Math.max(minLen, w.length)))) {
-          if (w.length >= s.length - 1 || s.length >= 3) return true;
-        }
-      }
-      return false;
-    }
-
-    function categorize(rawName) {
-      const n = normalize(rawName);
-      if (!n) return 'Other';
-      for (const rule of CATEGORY_RULES) {
-        for (const stem of rule.stems) {
-          if (itemMatchesStem(n, stem)) return rule.category;
-        }
-      }
-      return 'Other';
-    }
 
     function uid() {
       return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function saveItems(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
     function loadItems() {
@@ -323,14 +237,18 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return [];
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
+        if (!Array.isArray(parsed)) return [];
+        let changed = false;
+        const refreshed = parsed.map((it) => {
+          const category = categorize(it.name);
+          if (it.category !== category) changed = true;
+          return { ...it, category };
+        });
+        if (changed) saveItems(refreshed);
+        return refreshed;
       } catch {
         return [];
       }
-    }
-
-    function saveItems(items) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
     let items = loadItems();
