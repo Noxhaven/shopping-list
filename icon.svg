@@ -3,9 +3,9 @@
   <rect width="512" height="512" rx="96" fill="url(#bg)" opacity="0.9"/>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#faf7f1"/>
-      <stop offset="50%" stop-color="#f6f3ec"/>
-      <stop offset="100%" stop-color="#efebe3"/>
+      <stop offset="0%" stop-color="#eef5fa"/>
+      <stop offset="50%" stop-color="#e8f1f8"/>
+      <stop offset="100%" stop-color="#e0ecf4"/>
     </linearGradient>
     <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#d2b46e"/>
