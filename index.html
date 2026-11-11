@@ -53,33 +53,45 @@
       letter-spacing: -0.02em;
     }
     header p { margin: 0; font-size: 0.875rem; color: var(--muted); }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
     .add-panel {
-      background-color: #dfe8df;
+      background: transparent;
       background-image: none;
-      border-radius: var(--radius);
-      box-shadow: var(--card-shadow);
-      border: 1px solid #c8d4c9;
-      padding: 1rem;
-      margin-bottom: 1.25rem;
+      border: none;
+      box-shadow: none;
+      padding: 0.5rem 0;
+      margin-bottom: 0.85rem;
       forced-color-adjust: none;
     }
-    .add-panel label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #36393c;
-      -webkit-text-fill-color: #36393c;
-      margin-bottom: 0.5rem;
-      forced-color-adjust: none;
+    .add-compose {
+      display: flex;
+      gap: 0.45rem;
+      align-items: stretch;
     }
-    textarea {
+    .add-panel textarea,
+    textarea#bulkInput {
       width: 100%;
-      min-height: 5.5rem;
+      min-height: 3rem;
+      max-height: 7.5rem;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0.65rem 0.75rem;
-      font-size: 1rem;
-      resize: vertical;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.95rem;
+      line-height: 1.35;
+      resize: none;
+      overflow-y: auto;
+      flex: 1;
+      min-width: 0;
       font-family: inherit;
       background-color: #ffffff;
       background-image: none;
@@ -90,12 +102,24 @@
       appearance: none;
       forced-color-adjust: none;
     }
-    textarea:focus {
+    .add-panel textarea:focus,
+    textarea#bulkInput:focus {
       outline: none;
       border-color: rgba(184, 149, 74, 0.55);
-      box-shadow: 0 0 0 3px var(--gold-soft);
+      box-shadow: 0 0 0 2px var(--gold-soft);
     }
-    .add-row { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .add-panel .btn-primary {
+      flex: 0 0 auto;
+      align-self: stretch;
+      min-width: 4.5rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.875rem;
+      box-shadow: none;
+    }
+    @media (max-width: 380px) {
+      .add-compose { flex-direction: column; }
+      .add-panel .btn-primary { width: 100%; min-height: 2.25rem; }
+    }
     button {
       font: inherit;
       cursor: pointer;
@@ -220,15 +244,11 @@
         background-image: linear-gradient(180deg, #d8e8f6 0%, #cfe2f3 50%, #c3dbef 100%);
       }
       .add-panel {
-        background-color: #dfe8df;
+        background: transparent;
         background-image: none;
-        border-color: #c8d4c9;
       }
-      .add-panel label {
-        color: #36393c;
-        -webkit-text-fill-color: #36393c;
-      }
-      textarea {
+      .add-panel textarea,
+      textarea#bulkInput {
         background-color: #ffffff;
         background-image: none;
         color: #2c2e30;
@@ -261,10 +281,10 @@
     </header>
 
     <section class="add-panel" aria-label="Add items">
-      <label for="bulkInput">Add items</label>
-      <textarea id="bulkInput" placeholder="e.g. milk, obuoliai, duona&#10;vištiena, pomidorai"></textarea>
-      <div class="add-row">
-        <button type="button" class="btn-primary" id="btnAdd">Add to list</button>
+      <label class="visually-hidden" for="bulkInput">Add items</label>
+      <div class="add-compose">
+        <textarea id="bulkInput" rows="2" placeholder="milk, obuoliai, duona…"></textarea>
+        <button type="button" class="btn-primary" id="btnAdd">Add</button>
       </div>
     </section>
 
@@ -335,6 +355,7 @@
       }
       saveItems(items);
       ta.value = '';
+      if (typeof autoGrowTextarea === 'function') autoGrowTextarea(ta);
       render();
     }
 
@@ -460,8 +481,16 @@
       }
     }
 
+    const bulkInput = document.getElementById('bulkInput');
+    function autoGrowTextarea(ta) {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    }
+    bulkInput.addEventListener('input', () => autoGrowTextarea(bulkInput));
+    autoGrowTextarea(bulkInput);
+
     document.getElementById('btnAdd').addEventListener('click', addItemsFromInput);
-    document.getElementById('bulkInput').addEventListener('keydown', e => {
+    bulkInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         addItemsFromInput();
