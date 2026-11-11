@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'shopping-list-v5';
+const CACHE_VERSION = 'shopping-list-v6';
 
 const PRECACHE = [
   './',
