@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Shopping list">
+  <rect width="512" height="512" rx="96" fill="#dfe8df"/>
+  <rect width="512" height="512" rx="96" fill="url(#bg)" opacity="0.9"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#faf7f1"/>
+      <stop offset="50%" stop-color="#f6f3ec"/>
+      <stop offset="100%" stop-color="#efebe3"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d2b46e"/>
+      <stop offset="100%" stop-color="#b8954a"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#gold)" d="M128 168h40l48 200h168l40-120h-56l-24 72H232l-40-152H128v0zm88 280a32 32 0 1 0 0-64 32 32 0 0 0 0 64zm144 0a32 32 0 1 0 0-64 32 32 0 0 0 0 64z"/>
+  <path fill="#4a4438" opacity="0.85" d="M176 136h200l24 48H160l16-48z"/>
+  <path stroke="#b8954a" stroke-width="16" stroke-linecap="round" d="M200 96h48m72 0h48"/>
+</svg>
